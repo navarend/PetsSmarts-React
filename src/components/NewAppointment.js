@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import uuid from 'uuid';
 
-class NewQuote extends Component {
-    state = { 
-        appointment: {
-            pet: '',
-            owner: '',
-            date: '',
-            time: '',
-            symptom: ''
-        }
-    }
+const initialState = { 
+    appointment: {
+        pet: '',
+        owner: '',
+        date: '',
+        time: '',
+        symptom: ''
+    },
+    error: false
+}
+
+class NewAppointment extends Component {
+    state = { ...initialState };
 
     handleChange = e => {
         this.setState({
@@ -20,12 +24,33 @@ class NewQuote extends Component {
         })
     }
 
+    handleSubmit = e => {
+        e.preventDefault();
+        const { pet, owner, date, time, symptom } = this.state.appointment;
+        if( pet === '' || owner === '' || date === '' || time === '' || symptom === ''){
+            this.setState({
+                error: true
+            });
+            return;
+        }
+        //generate object with the data
+        const newAppointment = {...this.state.appointment};
+        newAppointment.id = uuid();
+        //add the appointment to actual state
+        this.props.createAppointment(newAppointment);
+        //set state to initialState
+        this.setState({ ...initialState })
+    }
+
     render() {
+        //get value state
+        const { error } = this.state;
         return (
             <div className="card mt-5 py-5">
                 <div className="card-body">
                     <h2 className="card-title text-center mb-5">COMPLETE THE FORM TO CREATE APPOINTMENT</h2>
-                    <form>
+                    { error ? <div className="alert alert-danger mt-2 mb-5 text-center">All the fields are requiered</div> : null }
+                    <form onSubmit={ this.handleSubmit }>
                         <div className="form-group row">
                             <label className="col-sm-4 col-lg2 col-form-label">PET NAME</label>
                             <div className="col-sm-8 col-lg-10">
@@ -64,4 +89,4 @@ class NewQuote extends Component {
     }
 }
 
-export default NewQuote;
+export default NewAppointment;
