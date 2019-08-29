@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import uuid from 'uuid';
+import PropTypes from 'prop-types';
 
 const initialState = { 
     appointment: {
@@ -89,4 +90,7 @@ class NewAppointment extends Component {
     }
 }
 
+NewAppointment.propType = {
+    createAppointment : PropTypes.func.isRequired
+}
 export default NewAppointment;
